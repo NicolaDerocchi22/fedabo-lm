@@ -1,10 +1,13 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import Response from './utils/sample_simple_response.json';
 import reactStringReplace from 'react-string-replace';
 import ContextLabel from './ContextLabel';
 import ContextModal from './ContextModal';
 
-const ResponseSection = () => {
+const ResponseSection: React.FC<{
+  setResponse: Dispatch<SetStateAction<string>>;
+  response: string;
+}> = ({}) => {
   const [contexts, setContexts] = useState<string[]>([]);
   const [contextsText, setContextsText] = useState<string[]>([]);
   const [finalResponse, setFinalResponse] = useState('');

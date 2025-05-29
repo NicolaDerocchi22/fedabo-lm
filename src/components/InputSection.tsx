@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 
-const InputSection = () => {
+const InputSection: React.FC<{
+  setResponse: Dispatch<SetStateAction<string>>;
+}> = () => {
   const [question, setQuestion] = useState('');
   const [numChunks, setNumChunks] = useState(20);
   const [minCosine, setMinCosine] = useState(0.2);
   const [rerank, setRerank] = useState(false);
   const [chunkSizeCutoff, setChunkSizeCutoff] = useState(512);
   const [filterOption, setFilterOption] = useState('fonte_primaria');
+
+  const handleAsk = () => {};
 
   return (
     <div className='border p-4 rounded-xl h-min align-middle'>
@@ -55,7 +59,10 @@ const InputSection = () => {
           rows={5}
           name='question'
         />
-        <button className='bg-blue-500 text-white p-2 rounded-md'>
+        <button
+          className='bg-blue-500 text-white p-2 rounded-md'
+          onClick={handleAsk}
+        >
           Chiedi
         </button>
       </form>
