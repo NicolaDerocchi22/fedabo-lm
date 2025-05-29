@@ -167,12 +167,10 @@ const OriginalResponseModal: React.FC<{
             })}
           </div>
         </div>
-        <div className='modal-action'>
-          <form method='dialog'>
-            <button className='btn'>Close</button>
-          </form>
-        </div>
       </div>
+      <form method='dialog' className='modal-backdrop'>
+        <button>close</button>
+      </form>
     </dialog>
   );
 };
