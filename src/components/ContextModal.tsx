@@ -7,6 +7,8 @@ const ContextModal: React.FC<{
   const [text, setText] = useState('');
 
   useEffect(() => {
+    console.log(contexts, selectedContext);
+
     setText(
       contexts.find((c) => {
         return c.includes(selectedContext);

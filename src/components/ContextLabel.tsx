@@ -12,7 +12,7 @@ const ContextLabel: React.FC<{
   return (
     <>
       <a
-        className={`text-blue-500 ${text.replace(' ', '_')}`}
+        className={`text-orange-500 ${text.replace(' ', '_')}`}
         onClick={openModal}
       >
         {text}

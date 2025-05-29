@@ -1,5 +1,6 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import Response from './utils/sample_simple_response.json';
+import Response_c from './utils/saple_complex_response.json';
 import reactStringReplace from 'react-string-replace';
 import ContextLabel from './ContextLabel';
 import ContextModal from './ContextModal';
@@ -9,37 +10,104 @@ const ResponseSection: React.FC<{
   setResponse: Dispatch<SetStateAction<string>>;
   response: string;
 }> = ({}) => {
-  const [contexts, setContexts] = useState<string[]>([]);
   const [contextsText, setContextsText] = useState<string[]>([]);
+  const [contextsText_c, setContextsText_c] = useState<string[]>([]);
   const [finalResponse, setFinalResponse] = useState('');
   const [selectedContext, setSelectedContext] = useState('');
 
   useEffect(() => {
-    let x: string[] = [];
-    let contextText_tmp: string[] = [];
+    if (true) {
+      let contexts_c: string[] = [];
 
-    Response.chunks_greater_than_512.forEach((r) => {
-      x.push(r.split(':')[0].replace('[', '').replace(']', ''));
-      contextText_tmp.push(r);
-    });
+      let contextText_tmp_c: string[] = [];
 
-    Response.chunks_less_than_512.forEach((r) => {
-      x.push(r.split(':')[0].replace('[', '').replace(']', ''));
-      contextText_tmp.push(r);
-    });
-    setContexts(x);
-    setContextsText(contextText_tmp);
+      Response_c.first_sub_question.response.chunks_greater_than_512.forEach(
+        (r) => {
+          contexts_c.push(
+            'Answer 1, ' + r.split(':')[0].replace('[', '').replace(']', '')
+          );
+          contextText_tmp_c.push(
+            [r.slice(0, 1), 'Answer 1, ', r.slice(1)].join('')
+          );
+        }
+      );
+      Response_c.first_sub_question.response.chunks_less_than_512.forEach(
+        (r) => {
+          contexts_c.push(
+            'Answer 1, ' + r.split(':')[0].replace('[', '').replace(']', '')
+          );
+          contextText_tmp_c.push(
+            [r.slice(0, 1), 'Answer 1, ', r.slice(1)].join('')
+          );
+        }
+      );
 
-    let replacedText: any = Response.merged_response;
+      Response_c.second_sub_question.response.chunks_greater_than_512.forEach(
+        (r) => {
+          contexts_c.push(
+            'Answer 2, ' + r.split(':')[0].replace('[', '').replace(']', '')
+          );
+          contextText_tmp_c.push(
+            [r.slice(0, 1), 'Answer 2, ', r.slice(1)].join('')
+          );
+        }
+      );
+      Response_c.second_sub_question.response.chunks_less_than_512.forEach(
+        (r) => {
+          contexts_c.push(
+            'Answer 2, ' + r.split(':')[0].replace('[', '').replace(']', '')
+          );
+          contextText_tmp_c.push(
+            [r.slice(0, 1), 'Answer , ', r.slice(1)].join('')
+          );
+        }
+      );
 
-    x.reverse().forEach((c) => {
-      replacedText = reactStringReplace(replacedText, c, (match) => {
-        return (
-          <ContextLabel text={match} setSelectedContext={setSelectedContext} />
-        );
+      setContextsText_c(contextText_tmp_c);
+
+      let replacedText: any = Response_c.final_prompt.response;
+
+      contexts_c.reverse().forEach((c) => {
+        replacedText = reactStringReplace(replacedText, c, (match) => {
+          return (
+            <ContextLabel
+              text={match}
+              setSelectedContext={setSelectedContext}
+            />
+          );
+        });
       });
-    });
-    setFinalResponse(replacedText);
+
+      setFinalResponse(replacedText);
+    } else {
+      let x: string[] = [];
+      let contextText_tmp: string[] = [];
+
+      Response.chunks_greater_than_512.forEach((r) => {
+        x.push(r.split(':')[0].replace('[', '').replace(']', ''));
+        contextText_tmp.push(r);
+      });
+
+      Response.chunks_less_than_512.forEach((r) => {
+        x.push(r.split(':')[0].replace('[', '').replace(']', ''));
+        contextText_tmp.push(r);
+      });
+      setContextsText(contextText_tmp);
+
+      let replacedText: any = Response.merged_response;
+
+      x.reverse().forEach((c) => {
+        replacedText = reactStringReplace(replacedText, c, (match) => {
+          return (
+            <ContextLabel
+              text={match}
+              setSelectedContext={setSelectedContext}
+            />
+          );
+        });
+      });
+      setFinalResponse(replacedText);
+    }
   }, []);
 
   const handleOriginalResponseClick = () => {
@@ -49,7 +117,10 @@ const ResponseSection: React.FC<{
 
   return (
     <>
-      <ContextModal contexts={contextsText} selectedContext={selectedContext} />
+      <ContextModal
+        contexts={contextsText_c}
+        selectedContext={selectedContext}
+      />
       <OriginalResponseModal
         chunks_less_512={Response.chunks_less_than_512}
         chunks_over_512={Response.chunks_greater_than_512}
