@@ -1,4 +1,4 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import Response from './utils/sample_simple_response.json';
 import Response_c from './utils/saple_complex_response.json';
 import reactStringReplace from 'react-string-replace';
@@ -7,16 +7,17 @@ import ContextModal from './ContextModal';
 import OriginalResponseModal from './OriginalResponseModal';
 
 const ResponseSection: React.FC<{
-  setResponse: Dispatch<SetStateAction<string>>;
-  response: string;
-}> = ({}) => {
+  response: any;
+}> = ({ response }) => {
   const [contextsText, setContextsText] = useState<string[]>([]);
   const [contextsText_c, setContextsText_c] = useState<string[]>([]);
   const [finalResponse, setFinalResponse] = useState('');
   const [selectedContext, setSelectedContext] = useState('');
+  const [isComplex, setIsComplex] = useState(false);
 
   useEffect(() => {
-    if (true) {
+    setIsComplex(response.is_complex);
+    if (response.is_complex) {
       let contexts_c: string[] = [];
 
       let contextText_tmp_c: string[] = [];
@@ -118,7 +119,7 @@ const ResponseSection: React.FC<{
   return (
     <>
       <ContextModal
-        contexts={contextsText_c}
+        contexts={isComplex ? contextsText_c : contextsText}
         selectedContext={selectedContext}
       />
       <OriginalResponseModal
@@ -131,6 +132,7 @@ const ResponseSection: React.FC<{
         results={Response.results}
         responses={Object.values(Response.responses)}
       />
+
       <div className='border p-4 rounded-xl col-span-2 h-min'>
         <div className='flex flex-row gap-4 items-baseline'>
           <p className='text-xl font-bold mb-4'>Response</p>
