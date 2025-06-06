@@ -20,6 +20,9 @@ const ContextModal: React.FC<{
     <dialog id='my_modal_1' className='modal'>
       <div className='modal-box max-w-full'>
         <h3 className='font-bold text-lg'>{selectedContext}</h3>
+        {
+          //MARKDOWN
+        }
         <p className='py-4 whitespace-pre-line'>{text}</p>
       </div>
       <form method='dialog' className='modal-backdrop'>

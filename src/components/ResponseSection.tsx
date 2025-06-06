@@ -141,6 +141,9 @@ const ResponseSection: React.FC<{
             Vedi risposta non formattata
           </p>
         </div>
+        {
+          //MARKDOWN
+        }
         <p className='border border-gray-300 p-4 rounded-md mb-4 whitespace-pre-line'>
           {finalResponse}
         </p>
