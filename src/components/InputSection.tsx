@@ -4,7 +4,8 @@ import { getResponse } from './utils/getResponse';
 
 const InputSection: React.FC<{
   setResponse: Dispatch<SetStateAction<any>>;
-}> = ({ setResponse }) => {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+}> = ({ setResponse, setIsLoading }) => {
   const defaultReq: IRequest = {
     question: '',
     num_caqr_chunks: 0,
@@ -35,8 +36,11 @@ const InputSection: React.FC<{
   };
 
   const handleAsk = () => {
-    const res = getResponse(req);
-    setResponse(res);
+    setIsLoading(true);
+    getResponse(req).then((data) => {
+      setResponse(data);
+      setIsLoading(false);
+    });
   };
 
   const handleClickAdvancedOption = () => {
