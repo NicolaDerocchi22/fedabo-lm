@@ -5,7 +5,14 @@ import { getResponse } from './utils/getResponse';
 const InputSection: React.FC<{
   setResponse: Dispatch<SetStateAction<any>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
-}> = ({ setResponse, setIsLoading }) => {
+  setShowPartialResponses: Dispatch<SetStateAction<boolean>>;
+  showPartialResponses: boolean;
+}> = ({
+  setResponse,
+  setIsLoading,
+  setShowPartialResponses,
+  showPartialResponses,
+}) => {
   const defaultReq: IRequest = {
     question: '',
     num_caqr_chunks: 0,
@@ -47,15 +54,12 @@ const InputSection: React.FC<{
     setShowAdvancedOptions(!showAdvancedOptions);
   };
 
+  const handleClickHidePartialResponses = () => {
+    setShowPartialResponses(!showPartialResponses);
+  };
+
   return (
-    <div className='border p-4 rounded-xl h-min align-middle'>
-      <h2 className='text-xl font-bold'>Input</h2>
-      <p
-        className='text-md max-w-fit mb-4 cursor-pointer font-light hover:text-orange-500 text-gray-600'
-        onClick={handleClickAdvancedOption}
-      >
-        Mostra opzioni avanzate
-      </p>
+    <div className='border p-4 rounded-xl h-min align-middle w-[50%] mx-auto'>
       <form className='flex flex-col gap-4'>
         {showAdvancedOptions && (
           <>
@@ -188,7 +192,6 @@ const InputSection: React.FC<{
             </div>
           </>
         )}
-        <div className='border-b border-gray-500 w-full h-0 my-2' />
         <textarea
           placeholder='Cosa vorresti sapere?'
           className='border p-2 rounded-md'
@@ -198,12 +201,26 @@ const InputSection: React.FC<{
           onChange={handleChange}
         />
       </form>
-      <button
-        className='bg-blue-500 text-white p-2 rounded-md mt-2 cursor-pointer'
-        onClick={handleAsk}
-      >
-        Chiedi
-      </button>
+      <div className='flex flex-row gap-4'>
+        <button
+          className='bg-blue-500 text-white px-6 py-2 rounded-md mt-2 cursor-pointer'
+          onClick={handleAsk}
+        >
+          Chiedi
+        </button>
+        <button
+          className='bg-gray-800 text-gray-300 px-6 py-2 rounded-md mt-2 cursor-pointer hover:bg-gray-700'
+          onClick={handleClickAdvancedOption}
+        >
+          Mostra opzioni avanzate
+        </button>
+        <button
+          className='bg-gray-800 text-gray-300 px-6 py-2 rounded-md mt-2 cursor-pointer hover:bg-gray-700'
+          onClick={handleClickHidePartialResponses}
+        >
+          {`${!showPartialResponses ? 'Mostra' : 'Nascondi'} risposte parziali`}
+        </button>
+      </div>
     </div>
   );
 };
