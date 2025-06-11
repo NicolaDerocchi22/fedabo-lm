@@ -9,6 +9,7 @@ import {
 } from './utils/getContextResponseSimple';
 
 const ResponseSection: React.FC<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response: any;
   isLoading: boolean;
   isFirtsQuestion: boolean;
@@ -30,6 +31,7 @@ const ResponseSection: React.FC<{
         );
 
         setContextsText(t.contextText);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let replacedText: any = response.final_prompt.response;
 
         t.contextList.reverse().forEach((c) => {
@@ -50,6 +52,7 @@ const ResponseSection: React.FC<{
         );
 
         setContextsText(t.contextText);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let replacedText: any = response.merged_response;
 
         t.contextList.forEach((c) => {
@@ -68,7 +71,7 @@ const ResponseSection: React.FC<{
   }, [response]);
 
   const handleOriginalResponseClick = () => {
-    // @ts-ignore: Object is possibly 'null'
+    // @ts-expect-error: Object is possibly 'null'
     document.getElementById('originalResponseModal').showModal();
   };
 

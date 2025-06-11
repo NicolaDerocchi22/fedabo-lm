@@ -14,4 +14,6 @@ export interface IRequest {
   multilanguage_extension: boolean;
   force_num_retrieved_chunks: boolean;
   tfidf_threshold: number;
+  request_id: string;
+  stream: boolean;
 }
