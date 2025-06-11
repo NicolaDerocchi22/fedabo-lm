@@ -6,12 +6,14 @@ const InputSection: React.FC<{
   setResponse: Dispatch<SetStateAction<any>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setShowPartialResponses: Dispatch<SetStateAction<boolean>>;
+  setIsFirtsQuestion: Dispatch<SetStateAction<boolean>>;
   showPartialResponses: boolean;
 }> = ({
   setResponse,
   setIsLoading,
   setShowPartialResponses,
   showPartialResponses,
+  setIsFirtsQuestion,
 }) => {
   const defaultReq: IRequest = {
     question: '',
@@ -44,8 +46,11 @@ const InputSection: React.FC<{
 
   const handleAsk = () => {
     setIsLoading(true);
+    setResponse(undefined);
+    setIsFirtsQuestion(false);
     getResponse(req).then((data) => {
       setResponse(data);
+      setIsFirtsQuestion(false);
       setIsLoading(false);
     });
   };

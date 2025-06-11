@@ -11,56 +11,59 @@ import {
 const ResponseSection: React.FC<{
   response: any;
   isLoading: boolean;
-}> = ({ response, isLoading }) => {
+  isFirtsQuestion: boolean;
+}> = ({ response, isLoading, isFirtsQuestion }) => {
   const [contextsText, setContextsText] = useState<string[]>([]);
   const [finalResponse, setFinalResponse] = useState('');
   const [selectedContext, setSelectedContext] = useState('');
 
   useEffect(() => {
-    if (response.is_complex) {
-      const t = getContextResponseComplex(
-        response.first_sub_question.response.chunks_greater_than_512,
-        response.first_sub_question.response.chunks_less_than_512,
-        response.second_sub_question.response.chunks_greater_than_512,
-        response.second_sub_question.response.chunks_less_than_512
-      );
+    if (!isLoading) {
+      if (response.is_complex) {
+        const t = getContextResponseComplex(
+          response.first_sub_question.response.chunks_greater_than_512,
+          response.first_sub_question.response.chunks_less_than_512,
+          response.second_sub_question.response.chunks_greater_than_512,
+          response.second_sub_question.response.chunks_less_than_512
+        );
 
-      setContextsText(t.contextText);
-      let replacedText: any = response.final_prompt.response;
+        setContextsText(t.contextText);
+        let replacedText: any = response.final_prompt.response;
 
-      t.contextList.reverse().forEach((c) => {
-        replacedText = reactStringReplace(replacedText, c, (match) => {
-          return (
-            <ContextLabel
-              text={match}
-              setSelectedContext={setSelectedContext}
-            />
-          );
+        t.contextList.reverse().forEach((c) => {
+          replacedText = reactStringReplace(replacedText, c, (match) => {
+            return (
+              <ContextLabel
+                text={match}
+                setSelectedContext={setSelectedContext}
+              />
+            );
+          });
         });
-      });
-      setFinalResponse(replacedText);
-    } else {
-      const t = getContextResponseSimple(
-        response.chunks_greater_than_512,
-        response.chunks_less_than_512
-      );
+        setFinalResponse(replacedText);
+      } else {
+        const t = getContextResponseSimple(
+          response.chunks_greater_than_512,
+          response.chunks_less_than_512
+        );
 
-      setContextsText(t.contextText);
-      let replacedText: any = response.merged_response;
+        setContextsText(t.contextText);
+        let replacedText: any = response.merged_response;
 
-      t.contextList.forEach((c) => {
-        replacedText = reactStringReplace(replacedText, c, (match) => {
-          return (
-            <ContextLabel
-              text={match}
-              setSelectedContext={setSelectedContext}
-            />
-          );
+        t.contextList.forEach((c) => {
+          replacedText = reactStringReplace(replacedText, c, (match) => {
+            return (
+              <ContextLabel
+                text={match}
+                setSelectedContext={setSelectedContext}
+              />
+            );
+          });
         });
-      });
-      setFinalResponse(replacedText);
+        setFinalResponse(replacedText);
+      }
     }
-  }, []);
+  }, [response]);
 
   const handleOriginalResponseClick = () => {
     // @ts-ignore: Object is possibly 'null'
@@ -69,7 +72,13 @@ const ResponseSection: React.FC<{
 
   return (
     <>
-      <ContextModal contexts={contextsText} selectedContext={selectedContext} />
+      {!isLoading && (
+        <ContextModal
+          contexts={contextsText}
+          selectedContext={selectedContext}
+        />
+      )}
+
       {/* <OriginalResponseModal
         chunks_less_512={Response.chunks_less_than_512}
         chunks_over_512={Response.chunks_greater_than_512}
@@ -90,11 +99,14 @@ const ResponseSection: React.FC<{
             Vedi risposta non formattata
           </p>
         </div>
-        {
-          //MARKDOWN
-        }
         <p className='border border-gray-300 p-4 rounded-md mb-4 whitespace-pre-line'>
-          {finalResponse}
+          {!isFirtsQuestion && isLoading ? (
+            <span className='loading loading-spinner loading-xl'></span>
+          ) : (
+            <></>
+          )}
+
+          {!isLoading && finalResponse}
         </p>
       </div>
     </>
