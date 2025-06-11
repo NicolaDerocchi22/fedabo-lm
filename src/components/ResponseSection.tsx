@@ -15,10 +15,12 @@ const ResponseSection: React.FC<{
 }> = ({ response, isLoading, isFirtsQuestion }) => {
   const [contextsText, setContextsText] = useState<string[]>([]);
   const [finalResponse, setFinalResponse] = useState('');
+  const [question, setQuestion] = useState('-');
   const [selectedContext, setSelectedContext] = useState('');
 
   useEffect(() => {
     if (!isLoading) {
+      setQuestion(response.question);
       if (response.is_complex) {
         const t = getContextResponseComplex(
           response.first_sub_question.response.chunks_greater_than_512,
@@ -79,16 +81,10 @@ const ResponseSection: React.FC<{
         />
       )}
 
-      {/* <OriginalResponseModal
-        chunks_less_512={Response.chunks_less_than_512}
-        chunks_over_512={Response.chunks_greater_than_512}
-        isComplex={Response.is_complex}
-        filtered_results={Response.filtered_results}
-        mergedResponse={Response.merged_response}
-        question={Response.question}
-        results={Response.results}
-        responses={Object.values(Response.responses)}
-      /> */}
+      <OriginalResponseModal
+        question={question}
+        response={JSON.stringify(response)}
+      />
       <div className='border p-4 rounded-xl col-span-2 h-min'>
         <div className='flex flex-row gap-4 items-baseline'>
           <p className='text-xl font-bold mb-4'>Response</p>
