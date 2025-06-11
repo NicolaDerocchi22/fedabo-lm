@@ -1,22 +1,33 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import type { IRequest } from './utils/interfaces';
 import { getResponse } from './utils/getResponse';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 const InputSection: React.FC<{
   setResponse: Dispatch<SetStateAction<any>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setShowPartialResponses: Dispatch<SetStateAction<boolean>>;
   setIsFirtsQuestion: Dispatch<SetStateAction<boolean>>;
+  setStreamingResponsesByChunk: Dispatch<SetStateAction<{}>>;
+  setStreamingResponse: Dispatch<SetStateAction<string>>;
   showPartialResponses: boolean;
+  isLoading: boolean;
 }> = ({
   setResponse,
   setIsLoading,
   setShowPartialResponses,
   showPartialResponses,
   setIsFirtsQuestion,
+  setStreamingResponsesByChunk,
+  setStreamingResponse,
+  isLoading,
 }) => {
   const defaultReq: IRequest = {
-    question: '',
+    question: 'Cosa vuol dire ESG?',
     num_caqr_chunks: 0,
     num_retrieved_chunks: 20,
     min_cosine: 0.2,
@@ -31,11 +42,16 @@ const InputSection: React.FC<{
     multilanguage_extension: true,
     force_num_retrieved_chunks: false,
     tfidf_threshold: 0.0,
+    request_id: '',
+    stream: true,
   };
 
   const [req, setReq] = useState<IRequest>(defaultReq);
   const [showAdvancedOptions, setShowAdvancedOptions] =
     useState<boolean>(false);
+  const ws = useRef<WebSocket>(null);
+  const wasManuallyStopped = useRef(false);
+  const requestIdRef = useRef('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -50,7 +66,6 @@ const InputSection: React.FC<{
     setIsFirtsQuestion(false);
     getResponse(req).then((data) => {
       setResponse(data);
-      setIsFirtsQuestion(false);
       setIsLoading(false);
     });
   };
@@ -61,6 +76,101 @@ const InputSection: React.FC<{
 
   const handleClickHidePartialResponses = () => {
     setShowPartialResponses(!showPartialResponses);
+  };
+
+  const openWebSocket = (requestId: string) => {
+    const wsUrl = `http://10.0.0.10:8082/ws/${requestId}`;
+    ws.current = new WebSocket(wsUrl);
+
+    ws.current.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    ws.current.onmessage = (event) => {
+      const data = event.data;
+
+      // Always append raw data to the general streaming response
+      setStreamingResponse((prev) => prev + data + '\n');
+      try {
+        const parsed = JSON.parse(data);
+
+        if (parsed.type && parsed.type.toLowerCase() === 'done') {
+          console.log('WebSocket DONE message received');
+          setIsLoading(false);
+          if (ws.current !== null) {
+            ws.current.close();
+          }
+          return;
+        }
+
+        const { stream_id, content } = parsed;
+        if (stream_id && content !== undefined) {
+          setStreamingResponsesByChunk((prev) => ({
+            ...prev,
+
+            [stream_id]: (prev[stream_id] || '') + content,
+          }));
+          return;
+        }
+      } catch {
+        // Non-JSON fallback
+
+        setStreamingResponsesByChunk((prev) => ({
+          ...prev,
+          general: (prev.general || '') + data + '\n',
+        }));
+      }
+    };
+
+    ws.current.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.current.onclose = () => {
+      console.log('WebSocket closed');
+    };
+  };
+
+  const handleSubmit = async () => {
+    wasManuallyStopped.current = false;
+    setIsLoading(true);
+    setIsFirtsQuestion(false);
+    setResponse(null);
+    setStreamingResponse('');
+    setStreamingResponsesByChunk({});
+    requestIdRef.current = uuidv4();
+
+    setReq({ ...req, request_id: requestIdRef.current });
+
+    try {
+      openWebSocket(requestIdRef.current);
+
+      const response = await axios.post(
+        `http://10.0.0.10:8082/ask`,
+        { ...req, request_id: requestIdRef.current },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      setResponse(response.data);
+      //! implementare history
+      // if (question.trim()) {
+      //   const newEntry = {
+      //     question: question,
+      //     answer:
+      //       response.data?.merged_response ||
+      //       response.data?.final_prompt?.response
+      //   };
+
+      //   const updatedHistory = [...conversationHistoryRef.current, newEntry].slice(-2); // mantieni solo le ultime 2
+      //   conversationHistoryRef.current = updatedHistory;
+      // }
+    } catch (error) {
+      console.error('Error:', error);
+      setResponse({ error: 'An error occurred while fetching the data.' });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -208,10 +318,13 @@ const InputSection: React.FC<{
       </form>
       <div className='flex flex-row gap-4'>
         <button
-          className='bg-blue-500 text-white px-6 py-2 rounded-md mt-2 cursor-pointer'
-          onClick={handleAsk}
+          className={`${
+            isLoading ? 'bg-gray-500' : 'bg-blue-500'
+          } text-white px-6 py-2 rounded-md mt-2 cursor-pointer`}
+          onClick={handleSubmit}
+          disabled={isLoading}
         >
-          Chiedi
+          {isLoading ? 'Caricamento...' : 'Chiedi'}
         </button>
         <button
           className='bg-gray-800 text-gray-300 px-6 py-2 rounded-md mt-2 cursor-pointer hover:bg-gray-700'
