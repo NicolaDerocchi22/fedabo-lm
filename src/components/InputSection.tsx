@@ -27,7 +27,7 @@ const InputSection: React.FC<{
   isLoading,
 }) => {
   const defaultReq: IRequest = {
-    question: 'Cosa vuol dire ESG?',
+    question: '',
     num_caqr_chunks: 0,
     num_retrieved_chunks: 20,
     min_cosine: 0.2,
