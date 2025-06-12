@@ -79,7 +79,7 @@ const InputSection: React.FC<{
   };
 
   const openWebSocket = (requestId: string) => {
-    const wsUrl = `http://10.0.0.10:8082/ws/${requestId}`;
+    const wsUrl = `http://109.205.19.154:8082/ws/${requestId}`;
     ws.current = new WebSocket(wsUrl);
 
     ws.current.onopen = () => {
@@ -146,7 +146,7 @@ const InputSection: React.FC<{
       openWebSocket(requestIdRef.current);
 
       const response = await axios.post(
-        `http://10.0.0.10:8082/ask`,
+        `http://109.205.19.154:8082/ask`,
         { ...req, request_id: requestIdRef.current },
         {
           headers: { 'Content-Type': 'application/json' },
