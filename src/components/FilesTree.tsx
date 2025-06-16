@@ -45,39 +45,13 @@ const FilesTree: React.FC = () => {
     const [showLeafIcon, setShowLeafIcon] = useState<React.ReactNode>(true);
     const [treeData, setTreeData] = useState<treeDataType[]>([]);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onSelect = (selectedKeys: React.Key[], info: any) => {
+    const onSelect = (selectedKeys: React.Key[], info: unknown) => {
         console.log('selected', selectedKeys, info);
     };
 
-    // const handleLeafIconChange = (value: 'true' | 'false' | 'custom') => {
-    //     if (value === 'custom') {
-    //         return setShowLeafIcon(<CheckOutlined />);
-    //     }
-
-    //     if (value === 'true') {
-    //         return setShowLeafIcon(true);
-    //     }
-
-    //     return setShowLeafIcon(false);
-    // };
 
     return (
         <div>
-            {/* <div style={{ marginBottom: 16 }}>
-                showLine: <Switch checked={!!showLine} onChange={setShowLine} />
-                <br />
-                <br />
-                showIcon: <Switch checked={showIcon} onChange={setShowIcon} />
-                <br />
-                <br />
-                showLeafIcon:{' '}
-                <Select defaultValue="true" onChange={handleLeafIconChange}>
-                    <Select.Option value="true">True</Select.Option>
-                    <Select.Option value="false">False</Select.Option>
-                    <Select.Option value="custom">Custom icon</Select.Option>
-                </Select>
-            </div> */}
             <Tree
                 showLine={showLine ? { showLeafIcon } : false}
                 showIcon={showIcon}
