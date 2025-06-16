@@ -3,7 +3,7 @@ import '@ant-design/v5-patch-for-react-19';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
 import ResponseBox from './ResponseBox';
 import ResponseBoxElementNotText from './ResponseBoxElementNotText';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 
 const StreamResponse: React.FC<{
   showPartialResponses: boolean;
@@ -31,7 +31,7 @@ const StreamResponse: React.FC<{
   useEffect(() => {
     if (isLoading == false && externalResponse) {
       const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
-      const myRegex = /\[Context \d+\]/dgi;
+      const myRegex = /\[Context \d+\]/gi;
       const myArray = stringone.split(myRegex);
       const stringoneMatch = stringone.match(myRegex);
       const arrayElementi: ReactNode[] = [];
