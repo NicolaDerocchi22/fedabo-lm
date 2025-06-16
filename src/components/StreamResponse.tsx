@@ -1,6 +1,6 @@
 import '@ant-design/v5-patch-for-react-19';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, type ReactNode } from 'react';
 import ResponseBox from './ResponseBox';
 import ResponseBoxElementNotText from './ResponseBoxElementNotText';
 import { Button, Modal } from 'antd';
@@ -12,7 +12,7 @@ const StreamResponse: React.FC<{
   externalResponse: any;
   mostraRaw: boolean;
 }> = ({ showPartialResponses, streamingResponsesByChunk, isLoading, externalResponse, mostraRaw }) => {
-  const [finalResponse, setFinalResponse] = useState<(string | undefined)[]>([]);
+  const [finalResponse, setFinalResponse] = useState<(ReactNode | undefined)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const titoloModale = useRef<string>("Default Title");
@@ -27,6 +27,30 @@ const StreamResponse: React.FC<{
       })
     );
   }, [streamingResponsesByChunk]);
+
+  useEffect(() => {
+    if (isLoading == false) {
+      const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
+      const myRegex = /\[Context \d+\]/dgi;
+      const myArray = stringone.split(myRegex);
+      const stringoneMatch = stringone.match(myRegex);
+      const arrayElementi: ReactNode[] = [];
+      if (stringoneMatch && stringoneMatch?.length > 0) {
+        for (let i = 0; i < myArray.length; i++) {
+          arrayElementi.push((() => (<h3>{myArray[i]}</h3>))());
+          arrayElementi.push((() => (<h1>{stringoneMatch[i] ?? ""}</h1>))());
+          // console.log(myArray[i]);
+          // console.log(stringone.match(myRegex)![i] ?? "");
+        }
+      }
+
+      setFinalResponse([(() => {
+        return <>
+          {arrayElementi}
+        </>
+      })()]);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
   }, [externalResponse, mostraRaw]);
