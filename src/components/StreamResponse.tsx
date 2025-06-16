@@ -9,7 +9,9 @@ const StreamResponse: React.FC<{
   showPartialResponses: boolean;
   streamingResponsesByChunk: any;
   isLoading: boolean;
-}> = ({ showPartialResponses, streamingResponsesByChunk, isLoading }) => {
+  externalResponse: any;
+  mostraRaw: boolean;
+}> = ({ showPartialResponses, streamingResponsesByChunk, isLoading, externalResponse, mostraRaw }) => {
   const [finalResponse, setFinalResponse] = useState<(string | undefined)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,6 +27,10 @@ const StreamResponse: React.FC<{
       })
     );
   }, [streamingResponsesByChunk]);
+
+  useEffect(() => {
+  }, [externalResponse, mostraRaw]);
+
   const ids = ['1', '2', '3'];
 
 
@@ -95,6 +101,22 @@ const StreamResponse: React.FC<{
             })()
           }
           isLoading={isLoading} />
+      </div>
+      <div>
+        {mostraRaw && <ResponseBoxElementNotText
+          element={
+            (() => {
+              return <>
+                <p className='text-lg font-semibold'>Raw fake "JSON"</p>
+                <div className='divider mt-0' />
+                <div>
+                  <p className='whitespace-pre-line'>{JSON.stringify(externalResponse, null, 3)}</p>
+                </div>
+              </>
+            })()
+          }
+          isLoading={isLoading} />
+        }
       </div>
 
       <Modal

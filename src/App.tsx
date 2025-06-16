@@ -7,14 +7,14 @@ import StreamResponse from './components/StreamResponse';
 
 function App() {
   const [response, setResponse] = useState<any>();
-  const [showPartialResponses, setShowPartialResponses] =
-    useState<boolean>(true);
+  const [showPartialResponses, setShowPartialResponses] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFirtsQuestion, setIsFirtsQuestion] = useState<boolean>(true);
   const [streamingResponsesByChunk, setStreamingResponsesByChunk] = useState(
     {}
   );
   const [streamingResponse, setStreamingResponse] = useState('');
+  const [mostraRaw, setMostraRaw] = useState<boolean>(false);
 
   return (
     <>
@@ -23,7 +23,8 @@ function App() {
           showPartialResponses={showPartialResponses}
           streamingResponsesByChunk={streamingResponsesByChunk}
           isLoading={isLoading}
-        />
+          externalResponse={response}
+          mostraRaw={mostraRaw} />
 
         {/* <ResponseSection
           response={response}
@@ -40,6 +41,7 @@ function App() {
           setStreamingResponsesByChunk={setStreamingResponsesByChunk}
           setStreamingResponse={setStreamingResponse}
           isLoading={isLoading}
+          setMostraRaw={setMostraRaw}
         />
       </div>
     </>
