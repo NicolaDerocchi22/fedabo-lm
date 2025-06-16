@@ -1,7 +1,9 @@
+import '@ant-design/v5-patch-for-react-19';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ResponseBox from './ResponseBox';
 import ResponseBoxElementNotText from './ResponseBoxElementNotText';
+import { Button, Modal } from 'antd';
 
 const StreamResponse: React.FC<{
   showPartialResponses: boolean;
@@ -9,6 +11,11 @@ const StreamResponse: React.FC<{
   isLoading: boolean;
 }> = ({ showPartialResponses, streamingResponsesByChunk, isLoading }) => {
   const [finalResponse, setFinalResponse] = useState<(string | undefined)[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const titoloModale = useRef<string>("Default Title");
+  const corpoModale = useRef<string>("Yeah Bodddyyy");
+
   useEffect(() => {
     setFinalResponse(
       Object.entries(streamingResponsesByChunk).map(([chunkId, content]) => {
@@ -19,6 +26,20 @@ const StreamResponse: React.FC<{
     );
   }, [streamingResponsesByChunk]);
   const ids = ['1', '2', '3'];
+
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       {showPartialResponses && (
@@ -66,12 +87,25 @@ const StreamResponse: React.FC<{
                 <div className='divider mt-0' />
                 <div>
                   <p className='whitespace-pre-line'>{finalResponse}</p>
+                  <Button type="primary" onClick={showModal}>
+                    Open Modal
+                  </Button>
                 </div>
               </>
             })()
           }
           isLoading={isLoading} />
       </div>
+
+      <Modal
+        title={titoloModale.current}
+        closable={{ 'aria-label': 'Custom Close Button' }}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        {corpoModale.current}
+      </Modal>
     </>
   );
 };
