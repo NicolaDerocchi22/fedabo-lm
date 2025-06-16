@@ -93,7 +93,10 @@ const StreamResponse: React.FC<{
                 <div className='divider mt-0' />
                 <div>
                   <p className='whitespace-pre-line'>{finalResponse}</p>
-                  <Button type="primary" onClick={showModal}>
+                  <Button type="primary" onClick={() => {
+                    titoloModale.current = "BOMBO";
+                    showModal()
+                  }}>
                     Open Modal
                   </Button>
                 </div>
@@ -102,16 +105,19 @@ const StreamResponse: React.FC<{
           }
           isLoading={isLoading} />
       </div>
+
       <div>
         {mostraRaw && <ResponseBoxElementNotText
           element={
             (() => {
-              return <>
+              return externalResponse ? <>
                 <p className='text-lg font-semibold'>Raw fake "JSON"</p>
                 <div className='divider mt-0' />
                 <div>
                   <p className='whitespace-pre-line'>{JSON.stringify(externalResponse, null, 3)}</p>
                 </div>
+              </> : <>
+                <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
               </>
             })()
           }
