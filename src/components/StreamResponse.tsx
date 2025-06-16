@@ -64,12 +64,15 @@ const StreamResponse: React.FC<{
           {arrayElementi}
         </>
       })()]);
-      const coasdo = document.getElementById("stoCazzo");
-      coasdo?.appendChild(new JSONFormatter(externalResponse).render());
     }
   }, [externalResponse, isLoading]);
 
   useEffect(() => {
+    const coasdo = document.getElementById("stoCazzo");
+    if (coasdo) {
+      coasdo.innerHTML = "";
+      coasdo.appendChild(new JSONFormatter(externalResponse).render());
+    }
   }, [externalResponse, mostraRaw]);
 
   const ids = ['1', '2', '3'];
