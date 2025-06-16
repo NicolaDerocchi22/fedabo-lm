@@ -29,7 +29,7 @@ const StreamResponse: React.FC<{
   }, [streamingResponsesByChunk]);
 
   useEffect(() => {
-    if (isLoading == false) {
+    if (isLoading == false && externalResponse) {
       const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
       const myRegex = /\[Context \d+\]/dgi;
       const myArray = stringone.split(myRegex);
@@ -38,7 +38,20 @@ const StreamResponse: React.FC<{
       if (stringoneMatch && stringoneMatch?.length > 0) {
         for (let i = 0; i < myArray.length; i++) {
           arrayElementi.push((() => (<span>{myArray[i]}</span>))());
-          arrayElementi.push((() => (<span className='cursor-zoom-in underline decoration-2 decoration-sky-500' onClick={() => { alert(`FROCIO ${stringoneMatch[i] ?? ""}`) }}>{stringoneMatch[i] ?? ""}</span>))());
+          const mostramiValue = externalResponse?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+            .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value ??
+            externalResponse?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+              .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value;
+          arrayElementi.push((() => (
+            <span
+              className='cursor-zoom-in underline decoration-2 decoration-sky-500'
+              onClick={() => {
+                titoloModale.current = stringoneMatch[i];
+                corpoModale.current = mostramiValue;
+                showModal();
+              }}>
+              {stringoneMatch[i]}
+            </span>))());
           // console.log(myArray[i]);
           // console.log(stringone.match(myRegex)![i] ?? "");
         }
@@ -50,7 +63,7 @@ const StreamResponse: React.FC<{
         </>
       })()]);
     }
-  }, [isLoading]);
+  }, [externalResponse, isLoading]);
 
   useEffect(() => {
   }, [externalResponse, mostraRaw]);
