@@ -37,8 +37,8 @@ const StreamResponse: React.FC<{
       const arrayElementi: ReactNode[] = [];
       if (stringoneMatch && stringoneMatch?.length > 0) {
         for (let i = 0; i < myArray.length; i++) {
-          arrayElementi.push((() => (<h3>{myArray[i]}</h3>))());
-          arrayElementi.push((() => (<h1>{stringoneMatch[i] ?? ""}</h1>))());
+          arrayElementi.push((() => (<span>{myArray[i]}</span>))());
+          arrayElementi.push((() => (<span className='cursor-zoom-in underline decoration-2 decoration-sky-500' onClick={() => { alert(`FROCIO ${stringoneMatch[i] ?? ""}`) }}>{stringoneMatch[i] ?? ""}</span>))());
           // console.log(myArray[i]);
           // console.log(stringone.match(myRegex)![i] ?? "");
         }
@@ -116,7 +116,7 @@ const StreamResponse: React.FC<{
                 <p className='text-lg font-semibold'>Risposta finale</p>
                 <div className='divider mt-0' />
                 <div>
-                  <p className='whitespace-pre-line'>{finalResponse}</p>
+                  <span className='whitespace-pre-line'>{finalResponse}</span>
                   {/* <Button type="primary" onClick={() => {
                     titoloModale.current = "BOMBO";
                     showModal()
