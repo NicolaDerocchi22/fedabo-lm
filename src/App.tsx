@@ -4,6 +4,7 @@ import { useState } from 'react';
 import InputSection from './components/InputSection';
 import ResponseSection from './components/ResponseSection';
 import StreamResponse from './components/StreamResponse';
+import FilesTree from './components/filesTree';
 
 function App() {
   const [response, setResponse] = useState<any>();
@@ -32,17 +33,25 @@ function App() {
           isFirtsQuestion={isFirtsQuestion}
         /> */}
 
-        <InputSection
-          setResponse={setResponse}
-          setIsLoading={setIsLoading}
-          setShowPartialResponses={setShowPartialResponses}
-          showPartialResponses={showPartialResponses}
-          setIsFirtsQuestion={setIsFirtsQuestion}
-          setStreamingResponsesByChunk={setStreamingResponsesByChunk}
-          setStreamingResponse={setStreamingResponse}
-          isLoading={isLoading}
-          setMostraRaw={setMostraRaw}
-        />
+        <div className='flex flex-wrap'>
+          <div className='my-3'>
+            <FilesTree />
+          </div>
+          <div className='grow min-w-[80vw]'>
+            <InputSection
+              setResponse={setResponse}
+              setIsLoading={setIsLoading}
+              setShowPartialResponses={setShowPartialResponses}
+              showPartialResponses={showPartialResponses}
+              setIsFirtsQuestion={setIsFirtsQuestion}
+              setStreamingResponsesByChunk={setStreamingResponsesByChunk}
+              setStreamingResponse={setStreamingResponse}
+              isLoading={isLoading}
+              setMostraRaw={setMostraRaw}
+            />
+          </div>
+        </div>
+
       </div>
     </>
   );
