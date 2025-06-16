@@ -62,6 +62,12 @@ const InputSection: React.FC<{
       const { name, value } = e.target;
       setReq({ ...req, [name]: value });
     };
+    const handleChangeCheckBox = (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      const { name, checked } = e.target;
+      setReq({ ...req, [name]: checked });
+    };
 
     const handleAsk = () => {
       setIsLoading(true);
@@ -182,87 +188,136 @@ const InputSection: React.FC<{
           {showAdvancedOptions && (
             <>
               <div className='grid grid-cols-2 gap-2'>
-                <input
-                  type='text'
-                  placeholder='num_caqr_chunks'
-                  className='border p-2 rounded-md flex-1'
-                  name='num_caqr_chunks'
-                  value={req.num_caqr_chunks}
-                  onChange={handleChange}
-                />
-                <input
-                  type='text'
-                  placeholder='num_retrieved_chunks'
-                  className='border p-2 rounded-md flex-1'
-                  name='num_retrieved_chunks'
-                  value={req.num_retrieved_chunks}
-                  onChange={handleChange}
-                />
-                <input
-                  type='check'
-                  placeholder='min_cosine'
-                  className='border p-2 rounded-md flex-1'
-                  name='min_cosine'
-                  value={req.min_cosine}
-                  onChange={handleChange}
-                />
-
-                <input
-                  type='check'
-                  placeholder='chunk_size_cutoff'
-                  className='border p-2 rounded-md flex-1'
-                  name='chunk_size_cutoff'
-                  value={req.chunk_size_cutoff}
-                  onChange={handleChange}
-                />
-                <input
-                  type='text'
-                  placeholder='filter_option'
-                  className='border p-2 rounded-md flex-1'
-                  name='filter_option'
-                  value={req.filter_option}
-                  onChange={handleChange}
-                />
-                <input
-                  type='check'
-                  placeholder='document_filter_option'
-                  className='border p-2 rounded-md flex-1'
-                  name='document_filter_option'
-                  value={req.document_filter_option}
-                  onChange={handleChange}
-                />
-                <input
-                  type='text'
-                  placeholder='language_filter_option'
-                  className='border p-2 rounded-md flex-1'
-                  name='language_filter_option'
-                  value={req.language_filter_option}
-                  onChange={handleChange}
-                />
-                <input
-                  type='check'
-                  placeholder='min_token_number_option'
-                  className='border p-2 rounded-md flex-1'
-                  name='min_token_number_option'
-                  value={req.min_token_number_option}
-                  onChange={handleChange}
-                />
-                <input
-                  type='text'
-                  placeholder='chunk_expansion_threshold'
-                  className='border p-2 rounded-md flex-1'
-                  name='chunk_expansion_threshold'
-                  value={req.chunk_expansion_threshold}
-                  onChange={handleChange}
-                />
-                <input
-                  type='text'
-                  placeholder='tfidf_threshold'
-                  className='border p-2 rounded-md flex-1'
-                  name='tfidf_threshold'
-                  value={req.tfidf_threshold}
-                  onChange={handleChange}
-                />
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    num_caqr_chunks:
+                  </span>
+                  <input
+                    type='text'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='num_caqr_chunks'
+                    value={req.num_caqr_chunks}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    num_retrieved_chunks:
+                  </span>
+                  <input
+                    type='text'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='num_retrieved_chunks'
+                    value={req.num_retrieved_chunks}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    min_cosine:
+                  </span>
+                  <input
+                    type='check'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='min_cosine'
+                    value={req.min_cosine}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    chunk_size_cutoff:
+                  </span>
+                  <input
+                    type='check'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='chunk_size_cutoff'
+                    value={req.chunk_size_cutoff}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    filter_option:
+                  </span>
+                  <input
+                    type='text'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='filter_option'
+                    value={req.filter_option}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    document_filter_option:
+                  </span>
+                  <input
+                    type='check'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='document_filter_option'
+                    value={req.document_filter_option}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    language_filter_option:
+                  </span>
+                  <input
+                    type='text'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='language_filter_option'
+                    value={req.language_filter_option}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    min_token_number_option:
+                  </span>
+                  <input
+                    type='check'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='min_token_number_option'
+                    value={req.min_token_number_option}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    chunk_expansion_threshold:
+                  </span>
+                  <input
+                    type='text'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='chunk_expansion_threshold'
+                    value={req.chunk_expansion_threshold}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex'>
+                  <span className='self-center me-2'>
+                    tfidf_threshold:
+                  </span>
+                  <input
+                    type='text'
+                    placeholder=''
+                    className='border p-2 rounded-md flex-1'
+                    name='tfidf_threshold'
+                    value={req.tfidf_threshold}
+                    onChange={handleChange}
+                  />
+                </div>
                 <div className='flex flex-row gap-4'>
                   <label>force_is_not_complex</label>
                   <input
@@ -271,7 +326,7 @@ const InputSection: React.FC<{
                     className='border p-2 rounded-md flex-1'
                     name='force_is_not_complex'
                     checked={req.force_is_not_complex}
-                    onChange={handleChange}
+                    onChange={handleChangeCheckBox}
                   />
                 </div>
                 <div className='flex flex-row gap-4'>
@@ -282,7 +337,7 @@ const InputSection: React.FC<{
                     className='border p-2 rounded-md flex-1'
                     name='multilanguage_extension'
                     checked={req.multilanguage_extension}
-                    onChange={handleChange}
+                    onChange={handleChangeCheckBox}
                   />
                 </div>
                 <div className='flex flex-row gap-4'>
@@ -293,7 +348,7 @@ const InputSection: React.FC<{
                     className='border p-2 rounded-md flex-1'
                     name='force_num_retrieved_chunks'
                     checked={req.force_num_retrieved_chunks}
-                    onChange={handleChange}
+                    onChange={handleChangeCheckBox}
                   />
                 </div>
                 <div className='flex flex-row gap-4'>
@@ -304,7 +359,7 @@ const InputSection: React.FC<{
                     className='border p-2 rounded-md flex-1'
                     name='rerank'
                     checked={req.rerank}
-                    onChange={handleChange}
+                    onChange={handleChangeCheckBox}
                   />
                 </div>
               </div>
