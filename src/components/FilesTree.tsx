@@ -1,78 +1,51 @@
-import React, { useState } from 'react';
-import { CarryOutOutlined, FormOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, type ReactNode } from 'react';
 import { Tree } from 'antd';
-import type { TreeDataNode } from 'antd';
+import { getFilesList } from './utils/getFilesList';
+import _ from 'lodash';
 
-const treeData: TreeDataNode[] = [
-    {
-        title: 'parent 1',
-        key: '0-0',
-        icon: <CarryOutOutlined />,
-        children: [
-            {
-                title: 'parent 1-0',
-                key: '0-0-0',
-                icon: <CarryOutOutlined />,
-                children: [
-                    { title: 'leaf', key: '0-0-0-0', icon: <CarryOutOutlined /> },
-                    {
-                        title: (
-                            <>
-                                <div>multiple line title</div>
-                                <div>multiple line title</div>
-                            </>
-                        ),
-                        key: '0-0-0-1',
-                        icon: <CarryOutOutlined />,
-                    },
-                    { title: 'leaf', key: '0-0-0-2', icon: <CarryOutOutlined /> },
-                ],
-            },
-            {
-                title: 'parent 1-1',
-                key: '0-0-1',
-                icon: <CarryOutOutlined />,
-                children: [{ title: 'leaf', key: '0-0-1-0', icon: <CarryOutOutlined /> }],
-            },
-            {
-                title: 'parent 1-2',
-                key: '0-0-2',
-                icon: <CarryOutOutlined />,
-                children: [
-                    { title: 'leaf', key: '0-0-2-0', icon: <CarryOutOutlined /> },
-                    {
-                        title: 'leaf',
-                        key: '0-0-2-1',
-                        icon: <CarryOutOutlined />,
-                        switcherIcon: <FormOutlined />,
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        title: 'parent 2',
-        key: '0-1',
-        icon: <CarryOutOutlined />,
-        children: [
-            {
-                title: 'parent 2-0',
-                key: '0-1-0',
-                icon: <CarryOutOutlined />,
-                children: [
-                    { title: 'leaf', key: '0-1-0-0', icon: <CarryOutOutlined /> },
-                    { title: 'leaf', key: '0-1-0-1', icon: <CarryOutOutlined /> },
-                ],
-            },
-        ],
-    },
-];
+type treeDataType = {
+    title: string,
+    key?: string,
+    icon?: ReactNode,
+    children?: treeDataType[]
+}
 
 const FilesTree: React.FC = () => {
-    const [showLine, setShowLine] = useState<boolean>(true);
-    const [showIcon, setShowIcon] = useState<boolean>(false);
-    const [showLeafIcon, setShowLeafIcon] = useState<React.ReactNode>(true);
+    useEffect(() => {
+        (async () => {
+            const files = await getFilesList();
 
+            const localTreeData: treeDataType[] = [];
+            for (const k in files) {
+                const localMainNode: treeDataType = {
+                    title: k,
+                    children: []
+                };
+                const groupped = _.groupBy(files[k], e => e.doc_type);
+                for (const inside in groupped) {
+                    localMainNode.children?.push(
+                        {
+                            title: inside,
+                            children: groupped[inside].map(e => ({ title: e.document_name }))
+                        }
+                    );
+                    groupped[inside].map(e => e.document_name)
+                }
+                localTreeData.push(localMainNode);
+            };
+
+            setTreeData(localTreeData);
+        })();
+    }, []);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [showLine, setShowLine] = useState<boolean>(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [showIcon, setShowIcon] = useState<boolean>(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [showLeafIcon, setShowLeafIcon] = useState<React.ReactNode>(true);
+    const [treeData, setTreeData] = useState<treeDataType[]>([]);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onSelect = (selectedKeys: React.Key[], info: any) => {
         console.log('selected', selectedKeys, info);
     };

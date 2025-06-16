@@ -183,7 +183,7 @@ const InputSection: React.FC<{
     };
 
     return (
-      <div className='border p-4 rounded-xl h-min align-middle w-[50%] mx-auto'>
+      <div className='border p-4 rounded-xl h-min align-middle max-w-[75%] mx-auto'>
         <form className='flex flex-col gap-4'>
           {showAdvancedOptions && (
             <>

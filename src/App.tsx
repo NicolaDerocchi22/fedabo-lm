@@ -34,10 +34,10 @@ function App() {
         /> */}
 
         <div className='flex flex-wrap'>
-          <div className='my-3'>
+          <div className='my-3 max-w-[40vw]'>
             <FilesTree />
           </div>
-          <div className='grow min-w-[80vw]'>
+          <div className='grow min-w-[60vw]'>
             <InputSection
               setResponse={setResponse}
               setIsLoading={setIsLoading}
