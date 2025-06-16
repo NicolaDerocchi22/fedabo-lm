@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState, type ReactNode } from 'react';
 import ResponseBox from './ResponseBox';
 import ResponseBoxElementNotText from './ResponseBoxElementNotText';
 import { Modal } from 'antd';
+import JSONFormatter from 'json-formatter-js';
 
 const StreamResponse: React.FC<{
   showPartialResponses: boolean;
@@ -63,6 +64,8 @@ const StreamResponse: React.FC<{
           {arrayElementi}
         </>
       })()]);
+      const coasdo = document.getElementById("stoCazzo");
+      coasdo?.appendChild(new JSONFormatter(externalResponse).render());
     }
   }, [externalResponse, isLoading]);
 
@@ -151,8 +154,7 @@ const StreamResponse: React.FC<{
               return externalResponse && !isLoading ? <>
                 <p className='text-lg font-semibold'>Raw fake "JSON"</p>
                 <div className='divider mt-0' />
-                <div>
-                  <Markdown>{JSON.stringify(externalResponse, null, 3)}</Markdown>
+                <div id='stoCazzo'>
                 </div>
               </> : <>
                 <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
