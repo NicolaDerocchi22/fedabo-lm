@@ -68,7 +68,7 @@ const StreamResponse: React.FC<{
         </div>
       )}
 
-      <div>
+      {/* <div>
         {Object.entries(streamingResponsesByChunk).map(([chunkId, content]) => {
           if (typeof content === 'string' && chunkId === '-3') {
             return (
@@ -82,7 +82,7 @@ const StreamResponse: React.FC<{
             );
           }
         })}
-      </div>
+      </div> */}
 
       <div>
         <ResponseBoxElementNotText
