@@ -1,3 +1,4 @@
+import Markdown from 'react-markdown'
 import '@ant-design/v5-patch-for-react-19';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -15,8 +16,8 @@ const StreamResponse: React.FC<{
   const [finalResponse, setFinalResponse] = useState<(ReactNode | undefined)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const titoloModale = useRef<string>("Default Title");
-  const corpoModale = useRef<string>("Yeah Bodddyyy");
+  const titoloModale = useRef<ReactNode>("Default Title");
+  const corpoModale = useRef<ReactNode>("Yeah Bodddyyy");
 
   useEffect(() => {
     setFinalResponse(
@@ -47,7 +48,7 @@ const StreamResponse: React.FC<{
               className='cursor-zoom-in underline decoration-2 decoration-sky-500'
               onClick={() => {
                 titoloModale.current = stringoneMatch[i];
-                corpoModale.current = mostramiValue;
+                corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
                 showModal();
               }}>
               {stringoneMatch[i]}
@@ -147,11 +148,11 @@ const StreamResponse: React.FC<{
         {mostraRaw && <ResponseBoxElementNotText
           element={
             (() => {
-              return externalResponse ? <>
+              return externalResponse && !isLoading ? <>
                 <p className='text-lg font-semibold'>Raw fake "JSON"</p>
                 <div className='divider mt-0' />
                 <div>
-                  <p className='whitespace-pre-line'>{JSON.stringify(externalResponse, null, 3)}</p>
+                  <Markdown>{JSON.stringify(externalResponse, null, 3)}</Markdown>
                 </div>
               </> : <>
                 <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
