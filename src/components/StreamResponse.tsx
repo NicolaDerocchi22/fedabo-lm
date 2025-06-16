@@ -84,27 +84,27 @@ const StreamResponse: React.FC<{
         })}
       </div> */}
 
-      <div>
+      {finalResponse.length > 0 && <div>
         <ResponseBoxElementNotText
           element={
             (() => {
               return <>
-                <p className='text-lg font-semibold'>Finale Pede</p>
+                <p className='text-lg font-semibold'>Risposta finale</p>
                 <div className='divider mt-0' />
                 <div>
                   <p className='whitespace-pre-line'>{finalResponse}</p>
-                  <Button type="primary" onClick={() => {
+                  {/* <Button type="primary" onClick={() => {
                     titoloModale.current = "BOMBO";
                     showModal()
                   }}>
                     Open Modal
-                  </Button>
+                  </Button> */}
                 </div>
               </>
             })()
           }
           isLoading={isLoading} />
-      </div>
+      </div>}
 
       <div>
         {mostraRaw && <ResponseBoxElementNotText
