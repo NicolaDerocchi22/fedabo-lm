@@ -168,6 +168,7 @@ const StreamResponse: React.FC<{
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        width={"80vw"}
       >
         {corpoModale.current}
       </Modal>
