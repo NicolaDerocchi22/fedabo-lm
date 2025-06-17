@@ -34,39 +34,42 @@ const StreamResponse: React.FC<{
 
   useEffect(() => {
     if (isLoading == false && externalResponse) {
-      const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
-      const myRegex = /\[Context \d+\]/gi;
-      const myArray = stringone.split(myRegex);
-      const stringoneMatch = stringone.match(myRegex);
-      const arrayElementi: ReactNode[] = [];
-      if (stringoneMatch && stringoneMatch?.length > 0) {
-        for (let i = 0; i < myArray.length; i++) {
-          arrayElementi.push((() => (<span>{myArray[i]}</span>))());
-          const mostramiValue = externalResponse?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
-            .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value ??
-            externalResponse?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
-              .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value;
-          arrayElementi.push((() => (
-            <span
-              className='cursor-zoom-in underline decoration-2 decoration-sky-500'
-              onClick={() => {
-                titoloModale.current = stringoneMatch[i];
-                corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
-                showModal();
-              }}>
-              {stringoneMatch[i]}
-            </span>))());
-          // console.log(myArray[i]);
-          // console.log(stringone.match(myRegex)![i] ?? "");
+      if (!externalResponse.is_complex) {
+        const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
+        const myRegex = /\[Context \d+\]/gi;
+        const myArray = stringone.split(myRegex);
+        const stringoneMatch = stringone.match(myRegex);
+        const arrayElementi: ReactNode[] = [];
+        if (stringoneMatch && stringoneMatch?.length > 0) {
+          for (let i = 0; i < myArray.length; i++) {
+            arrayElementi.push((() => (<span>{myArray[i]}</span>))());
+            const mostramiValue = externalResponse?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+              .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value ??
+              externalResponse?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+                .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value;
+            arrayElementi.push((() => (
+              <span
+                className='cursor-zoom-in underline decoration-2 decoration-sky-500'
+                onClick={() => {
+                  titoloModale.current = stringoneMatch[i];
+                  corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
+                  showModal();
+                }}>
+                {stringoneMatch[i]}
+              </span>))());
+            // console.log(myArray[i]);
+            // console.log(stringone.match(myRegex)![i] ?? "");
+          }
         }
+        setFinalResponse([(() => {
+          return <>
+            {arrayElementi}
+          </>
+        })()]);
       }
 
-      setFinalResponse([(() => {
-        return <>
-          {arrayElementi}
-        </>
-      })()]);
     }
+
   }, [externalResponse, isLoading]);
 
   useEffect(() => {
