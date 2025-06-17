@@ -20,10 +20,12 @@ const StreamResponse: React.FC<{
   const titoloModale = useRef<ReactNode>("Default Title");
   const corpoModale = useRef<ReactNode>("Yeah Bodddyyy");
 
+  const ids = ["-3", "3000"];
+
   useEffect(() => {
     setFinalResponse(
       Object.entries(streamingResponsesByChunk).map(([chunkId, content]) => {
-        if (typeof content === 'string' && chunkId === '-3') {
+        if (typeof content === 'string' && (ids.includes(chunkId))) {
           return content;
         }
       })
@@ -32,39 +34,42 @@ const StreamResponse: React.FC<{
 
   useEffect(() => {
     if (isLoading == false && externalResponse) {
-      const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
-      const myRegex = /\[Context \d+\]/gi;
-      const myArray = stringone.split(myRegex);
-      const stringoneMatch = stringone.match(myRegex);
-      const arrayElementi: ReactNode[] = [];
-      if (stringoneMatch && stringoneMatch?.length > 0) {
-        for (let i = 0; i < myArray.length; i++) {
-          arrayElementi.push((() => (<span>{myArray[i]}</span>))());
-          const mostramiValue = externalResponse?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
-            .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value ??
-            externalResponse?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
-              .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value;
-          arrayElementi.push((() => (
-            <span
-              className='cursor-zoom-in underline decoration-2 decoration-sky-500'
-              onClick={() => {
-                titoloModale.current = stringoneMatch[i];
-                corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
-                showModal();
-              }}>
-              {stringoneMatch[i]}
-            </span>))());
-          // console.log(myArray[i]);
-          // console.log(stringone.match(myRegex)![i] ?? "");
+      if (!externalResponse.is_complex) {
+        const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
+        const myRegex = /\[Context \d+\]/gi;
+        const myArray = stringone.split(myRegex);
+        const stringoneMatch = stringone.match(myRegex);
+        const arrayElementi: ReactNode[] = [];
+        if (stringoneMatch && stringoneMatch?.length > 0) {
+          for (let i = 0; i < myArray.length; i++) {
+            arrayElementi.push((() => (<span>{myArray[i]}</span>))());
+            const mostramiValue = externalResponse?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+              .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value ??
+              externalResponse?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+                .find((e: { context: string; }) => e.context == stringoneMatch[i])?.value;
+            arrayElementi.push((() => (
+              <span
+                className='cursor-zoom-in underline decoration-2 decoration-sky-500'
+                onClick={() => {
+                  titoloModale.current = stringoneMatch[i];
+                  corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
+                  showModal();
+                }}>
+                {stringoneMatch[i]}
+              </span>))());
+            // console.log(myArray[i]);
+            // console.log(stringone.match(myRegex)![i] ?? "");
+          }
         }
+        setFinalResponse([(() => {
+          return <>
+            {arrayElementi}
+          </>
+        })()]);
       }
 
-      setFinalResponse([(() => {
-        return <>
-          {arrayElementi}
-        </>
-      })()]);
     }
+
   }, [externalResponse, isLoading]);
 
   useEffect(() => {
@@ -74,9 +79,6 @@ const StreamResponse: React.FC<{
       coasdo.appendChild(new JSONFormatter(externalResponse).render());
     }
   }, [externalResponse, mostraRaw]);
-
-  const ids = ['1', '2', '3'];
-
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -96,7 +98,7 @@ const StreamResponse: React.FC<{
         <div className='grid grid-cols-3 gap-4'>
           {Object.entries(streamingResponsesByChunk).map(
             ([chunkId, content]) => {
-              if (typeof content === 'string' && ids.includes(chunkId)) {
+              if (typeof content === 'string' && !ids.includes(chunkId)) {
                 return (
                   <div key={chunkId}>
                     <ResponseBox
@@ -133,7 +135,7 @@ const StreamResponse: React.FC<{
           element={
             (() => {
               return <>
-                <p className='text-lg font-semibold'>Risposta finale</p>
+                <p className='text-lg font-semibold'>Risposta finale {externalResponse?.is_complex != undefined ? (externalResponse?.is_complex ? "(Complessa)" : "(Semplice)") : ("")}</p>
                 <div className='divider mt-0' />
                 <div>
                   <span className='whitespace-pre-line'>{finalResponse}</span>
