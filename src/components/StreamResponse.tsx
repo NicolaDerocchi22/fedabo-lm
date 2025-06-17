@@ -135,7 +135,7 @@ const StreamResponse: React.FC<{
           element={
             (() => {
               return <>
-                <p className='text-lg font-semibold'>Risposta finale</p>
+                <p className='text-lg font-semibold'>Risposta finale {externalResponse?.is_complex != undefined ? (externalResponse?.is_complex ? "(Complessa)" : "(Semplice)") : ("")}</p>
                 <div className='divider mt-0' />
                 <div>
                   <span className='whitespace-pre-line'>{finalResponse}</span>
