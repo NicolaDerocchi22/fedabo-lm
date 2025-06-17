@@ -92,7 +92,7 @@ const InputSection: React.FC<{
       ws.current = new WebSocket(wsUrl);
 
       ws.current.onopen = () => {
-        console.log('WebSocket connected');
+        // console.log('WebSocket connected');
       };
 
       ws.current.onmessage = (event) => {
@@ -104,7 +104,7 @@ const InputSection: React.FC<{
           const parsed = JSON.parse(data);
 
           if (parsed.type && parsed.type.toLowerCase() === 'done') {
-            console.log('WebSocket DONE message received');
+            // console.log('WebSocket DONE message received');
             setIsLoading(false);
             if (ws.current !== null) {
               ws.current.close();
@@ -132,11 +132,11 @@ const InputSection: React.FC<{
       };
 
       ws.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        // console.error('WebSocket error:', error);
       };
 
       ws.current.onclose = () => {
-        console.log('WebSocket closed');
+        // console.log('WebSocket closed');
       };
     };
 
@@ -176,7 +176,7 @@ const InputSection: React.FC<{
         //   conversationHistoryRef.current = updatedHistory;
         // }
       } catch (error) {
-        console.error('Error:', error);
+        // console.error('Error:', error);
         setResponse({ error: 'An error occurred while fetching the data.' });
         setIsLoading(false);
       }

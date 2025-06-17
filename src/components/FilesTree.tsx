@@ -46,7 +46,7 @@ const FilesTree: React.FC = () => {
     const [treeData, setTreeData] = useState<treeDataType[]>([]);
 
     const onSelect = (selectedKeys: React.Key[], info: unknown) => {
-        console.log('selected', selectedKeys, info);
+        // console.log('selected', selectedKeys, info);
     };
 
 
