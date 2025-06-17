@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import type { IRequest } from './utils/interfaces';
 import { getResponse } from './utils/getResponse';
 import { v4 as uuidv4 } from 'uuid';
@@ -48,6 +48,7 @@ const InputSection: React.FC<{
       stream: true,
     };
 
+    const [vaiConAxios, setVaiConAxios] = useState<boolean>(false);
     const [mostraRawLocal, setMostraRawLocal] = useState<boolean>(false);
     const [req, setReq] = useState<IRequest>(defaultReq);
     const [showAdvancedOptions, setShowAdvancedOptions] =
@@ -92,6 +93,7 @@ const InputSection: React.FC<{
       ws.current = new WebSocket(wsUrl);
 
       ws.current.onopen = () => {
+        setVaiConAxios(true);
         // console.log('WebSocket connected');
       };
 
@@ -154,15 +156,6 @@ const InputSection: React.FC<{
       try {
         openWebSocket(requestIdRef.current);
 
-        const response = await axios.post(
-          `http://109.205.19.154:8082/ask`,
-          { ...req, request_id: requestIdRef.current },
-          {
-            headers: { 'Content-Type': 'application/json' },
-          }
-        );
-
-        setResponse(response.data);
         //! implementare history
         // if (question.trim()) {
         //   const newEntry = {
@@ -181,6 +174,21 @@ const InputSection: React.FC<{
         setIsLoading(false);
       }
     };
+
+    useEffect(() => {
+      if (vaiConAxios) {
+        axios.post(
+          `http://109.205.19.154:8082/ask`,
+          { ...req, request_id: requestIdRef.current },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        ).then((response) => {
+          setResponse(response.data);
+          setVaiConAxios(false);
+        });
+      }
+    }, [vaiConAxios])
 
     return (
       <div className='border p-4 rounded-xl h-min align-middle max-w-[75%] mx-auto'>
