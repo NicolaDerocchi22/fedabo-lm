@@ -4,7 +4,7 @@ import { useState } from 'react';
 import InputSection from './components/InputSection';
 import ResponseSection from './components/ResponseSection';
 import StreamResponse from './components/StreamResponse';
-import FilesTree from './components/filesTree';
+import FilesTree from './components/FilesTree';
 
 function App() {
   const [response, setResponse] = useState<any>();
@@ -33,8 +33,8 @@ function App() {
           isFirtsQuestion={isFirtsQuestion}
         /> */}
 
-        <div className='flex flex-wrap'>
-          <div className='my-3 max-w-[40vw]'>
+        <div className='flex'>
+          <div className='my-3 max-w-[40vw] overflow-auto'>
             <FilesTree />
           </div>
           <div className='grow min-w-[60vw]'>
