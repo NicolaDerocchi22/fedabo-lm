@@ -20,10 +20,12 @@ const StreamResponse: React.FC<{
   const titoloModale = useRef<ReactNode>("Default Title");
   const corpoModale = useRef<ReactNode>("Yeah Bodddyyy");
 
+  const ids = ["-3", "3000"];
+
   useEffect(() => {
     setFinalResponse(
       Object.entries(streamingResponsesByChunk).map(([chunkId, content]) => {
-        if (typeof content === 'string' && chunkId === '-3') {
+        if (typeof content === 'string' && (ids.includes(chunkId))) {
           return content;
         }
       })
@@ -75,9 +77,6 @@ const StreamResponse: React.FC<{
     }
   }, [externalResponse, mostraRaw]);
 
-  const ids = ['1', '2', '3'];
-
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -96,7 +95,7 @@ const StreamResponse: React.FC<{
         <div className='grid grid-cols-3 gap-4'>
           {Object.entries(streamingResponsesByChunk).map(
             ([chunkId, content]) => {
-              if (typeof content === 'string' && ids.includes(chunkId)) {
+              if (typeof content === 'string' && !ids.includes(chunkId)) {
                 return (
                   <div key={chunkId}>
                     <ResponseBox
