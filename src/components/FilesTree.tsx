@@ -1,5 +1,5 @@
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { Tree } from 'antd';
+import { Tree, type TreeProps } from 'antd';
 import { getFilesList } from './utils/getFilesList';
 import _ from 'lodash';
 
@@ -45,10 +45,13 @@ const FilesTree: React.FC = () => {
     const [showLeafIcon, setShowLeafIcon] = useState<React.ReactNode>(true);
     const [treeData, setTreeData] = useState<treeDataType[]>([]);
 
-    const onSelect = (selectedKeys: React.Key[], info: unknown) => {
-        // console.log('selected', selectedKeys, info);
+    const onCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
+        console.log('onCheck', checkedKeys, info.node.title);
     };
 
+    const onSelect = (selectedKeys: React.Key[], info: unknown) => {
+        console.log('selected', selectedKeys, info);
+    };
 
     return (
         <div>
@@ -57,6 +60,7 @@ const FilesTree: React.FC = () => {
                 showIcon={showIcon}
                 defaultExpandedKeys={['']}
                 onSelect={onSelect}
+                onCheck={onCheck}
                 treeData={treeData}
             />
         </div>

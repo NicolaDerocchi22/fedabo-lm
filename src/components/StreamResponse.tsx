@@ -66,10 +66,63 @@ const StreamResponse: React.FC<{
             {arrayElementi}
           </>
         })()]);
+      } else {
+        const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
+        const myRegex = /\[Answer \d+, Context \d+\]/gi;
+        const myArray = stringone.split(myRegex);
+        const stringoneMatch = stringone.match(myRegex);
+        const arrayElementi: ReactNode[] = [];
+        debugger;
+        if (stringoneMatch && stringoneMatch?.length > 0) {
+          for (let i = 0; i < myArray.length; i++) {
+            arrayElementi.push((() => (<span>{myArray[i]}</span>))());
+            debugger;
+            let domandaIncriminata: any = {};
+            switch (stringoneMatch[i]?.slice(0, 9) ?? "") {
+              case "[Answer 1":
+                domandaIncriminata = externalResponse.first_sub_question.response;
+                break;
+              case "[Answer 2":
+                domandaIncriminata = externalResponse.second_sub_question.response;
+
+                break;
+              case "":
+                debugger;
+                break;
+              default:
+                break;
+            }
+            const stringoneMatchCastrato: string = `[${stringoneMatch[i]?.slice(11) ?? ""}`;
+
+            if (domandaIncriminata && stringoneMatchCastrato.length > 10) {
+              const mostramiValue = domandaIncriminata?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+                .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value ??
+                domandaIncriminata?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+                  .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value;
+              arrayElementi.push((() => (
+                <span
+                  className='cursor-zoom-in underline decoration-2 decoration-sky-500'
+                  onClick={() => {
+                    titoloModale.current = stringoneMatch[i];
+                    corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
+                    showModal();
+                  }}>
+                  {stringoneMatch[i]}
+                </span>))());
+            }
+            else {
+              debugger;
+            }
+          }
+        }
+        setFinalResponse([(() => {
+          return <>
+            {arrayElementi}
+          </>
+        })()]);
       }
 
     }
-
   }, [externalResponse, isLoading]);
 
   useEffect(() => {
@@ -94,6 +147,40 @@ const StreamResponse: React.FC<{
 
   return (
     <>
+      <div>
+        {mostraRaw && <ResponseBoxElementNotText
+          element={
+            (() => {
+              return externalResponse && !isLoading ? <>
+                <p className='text-lg font-semibold'>Raw fake "JSON"</p>
+                <div className='divider mt-0' />
+                <div id='stoCazzo'>
+                </div>
+              </> : <>
+                <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
+              </>
+            })()
+          }
+          isLoading={isLoading} />
+        }
+      </div>
+
+      {finalResponse.length > 0 && <div>
+        <ResponseBoxElementNotText
+          element={
+            (() => {
+              return <>
+                <p className='text-lg font-semibold'>Risposta finale {externalResponse?.is_complex != undefined ? (externalResponse?.is_complex ? "(Complessa)" : "(Semplice)") : ("")}</p>
+                <div className='divider mt-0' />
+                <div>
+                  <span className='whitespace-pre-line'>{finalResponse}</span>
+                </div>
+              </>
+            })()
+          }
+          isLoading={isLoading} />
+      </div>}
+
       {showPartialResponses && (
         <div className='grid grid-cols-3 gap-4'>
           {Object.entries(streamingResponsesByChunk).map(
@@ -113,62 +200,6 @@ const StreamResponse: React.FC<{
           )}
         </div>
       )}
-
-      {/* <div>
-        {Object.entries(streamingResponsesByChunk).map(([chunkId, content]) => {
-          if (typeof content === 'string' && chunkId === '-3') {
-            return (
-              <div key={chunkId}>
-                <ResponseBox
-                  text={content}
-                  title='Risposta finale'
-                  isLoading={isLoading}
-                />
-              </div>
-            );
-          }
-        })}
-      </div> */}
-
-      {finalResponse.length > 0 && <div>
-        <ResponseBoxElementNotText
-          element={
-            (() => {
-              return <>
-                <p className='text-lg font-semibold'>Risposta finale {externalResponse?.is_complex != undefined ? (externalResponse?.is_complex ? "(Complessa)" : "(Semplice)") : ("")}</p>
-                <div className='divider mt-0' />
-                <div>
-                  <span className='whitespace-pre-line'>{finalResponse}</span>
-                  {/* <Button type="primary" onClick={() => {
-                    titoloModale.current = "BOMBO";
-                    showModal()
-                  }}>
-                    Open Modal
-                  </Button> */}
-                </div>
-              </>
-            })()
-          }
-          isLoading={isLoading} />
-      </div>}
-
-      <div>
-        {mostraRaw && <ResponseBoxElementNotText
-          element={
-            (() => {
-              return externalResponse && !isLoading ? <>
-                <p className='text-lg font-semibold'>Raw fake "JSON"</p>
-                <div className='divider mt-0' />
-                <div id='stoCazzo'>
-                </div>
-              </> : <>
-                <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
-              </>
-            })()
-          }
-          isLoading={isLoading} />
-        }
-      </div>
 
       <Modal
         title={titoloModale.current}
