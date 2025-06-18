@@ -39,7 +39,7 @@ const StreamResponse: React.FC<{
     setFinalResponse(getNodesWithHighliGhtedClickable());
   }, [externalResponse, isLoading]);
 
-  const getNodesWithHighliGhtedClickable = (testo?: string, isChunko: boolean = false) => {
+  const getNodesWithHighliGhtedClickable = (testo?: string, isChunko: boolean = false, qualeDomanda: string = "") => {
     if (isLoading == false && externalResponse) {
       if (!externalResponse.is_complex) {
         const stringone = testo ?? externalResponse.merged_response;
@@ -77,22 +77,21 @@ const StreamResponse: React.FC<{
           for (let i = 0; i < myArray.length; i++) {
             arrayElementi.push((() => (<span>{myArray[i]}</span>))());
             let domandaIncriminata: any = {};
-            switch (stringoneMatch[i]?.slice(0, 9) ?? "") {
+            switch (isChunko ? qualeDomanda : stringoneMatch[i]?.slice(0, 9) ?? "") {
               case "[Answer 1":
                 domandaIncriminata = externalResponse.first_sub_question.response;
                 break;
               case "[Answer 2":
                 domandaIncriminata = externalResponse.second_sub_question.response;
-
                 break;
               case "":
                 break;
               default:
                 break;
             }
-            const stringoneMatchCastrato: string = `[${stringoneMatch[i]?.slice(11) ?? ""}`;
+            const stringoneMatchCastrato: string = isChunko ? stringoneMatch[i] : `[${stringoneMatch[i]?.slice(11) ?? ""}`;
 
-            if (domandaIncriminata && stringoneMatchCastrato.length > 10) {
+            if (domandaIncriminata && stringoneMatchCastrato?.length > 10) {
               const mostramiValue = domandaIncriminata?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
                 .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value ??
                 domandaIncriminata?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
@@ -109,6 +108,9 @@ const StreamResponse: React.FC<{
                 </span>))());
             }
           }
+        }
+        else if (isChunko) {
+          return [testo];
         }
         return arrayElementi;
       }
@@ -209,7 +211,9 @@ const StreamResponse: React.FC<{
                             <p className='text-lg font-semibold'>'Risposta parziale: ' {chunkId}</p>
                             <div className='divider mt-0' />
                             <div >
-                              <span key={chunkId} className='whitespace-pre-line'>{getNodesWithHighliGhtedClickable(content, true)}</span>
+                              <span key={chunkId} className='whitespace-pre-line'>
+                                {getNodesWithHighliGhtedClickable(content, true, parseInt(chunkId) < 1500 ? "[Answer 1" : "[Answer 2")}
+                              </span>
                             </div>
                           </>
                         })()
