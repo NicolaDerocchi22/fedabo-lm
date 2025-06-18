@@ -19,20 +19,7 @@ function App() {
 
   return (
     <>
-      <div className='p-6 flex flex-col gap-4'>
-        <StreamResponse
-          showPartialResponses={showPartialResponses}
-          streamingResponsesByChunk={streamingResponsesByChunk}
-          isLoading={isLoading}
-          externalResponse={response}
-          mostraRaw={mostraRaw} />
-
-        {/* <ResponseSection
-          response={response}
-          isLoading={isLoading}
-          isFirtsQuestion={isFirtsQuestion}
-        /> */}
-
+      <div className='p-6 flex flex-col-reverse gap-4 overflow-y-auto h-svh'>
         <div className='flex'>
           <div className='my-3 max-w-[40vw] overflow-auto'>
             <FilesTree />
@@ -51,7 +38,12 @@ function App() {
             />
           </div>
         </div>
-
+        <StreamResponse
+          showPartialResponses={showPartialResponses}
+          streamingResponsesByChunk={streamingResponsesByChunk}
+          isLoading={isLoading}
+          externalResponse={response}
+          mostraRaw={mostraRaw} />
       </div>
     </>
   );

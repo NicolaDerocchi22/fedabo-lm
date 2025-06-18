@@ -94,6 +94,22 @@ const StreamResponse: React.FC<{
 
   return (
     <>
+      {finalResponse.length > 0 && <div>
+        <ResponseBoxElementNotText
+          element={
+            (() => {
+              return <>
+                <p className='text-lg font-semibold'>Risposta finale {externalResponse?.is_complex != undefined ? (externalResponse?.is_complex ? "(Complessa)" : "(Semplice)") : ("")}</p>
+                <div className='divider mt-0' />
+                <div>
+                  <span className='whitespace-pre-line'>{finalResponse}</span>
+                </div>
+              </>
+            })()
+          }
+          isLoading={isLoading} />
+      </div>}
+
       {showPartialResponses && (
         <div className='grid grid-cols-3 gap-4'>
           {Object.entries(streamingResponsesByChunk).map(
@@ -113,44 +129,6 @@ const StreamResponse: React.FC<{
           )}
         </div>
       )}
-
-      {/* <div>
-        {Object.entries(streamingResponsesByChunk).map(([chunkId, content]) => {
-          if (typeof content === 'string' && chunkId === '-3') {
-            return (
-              <div key={chunkId}>
-                <ResponseBox
-                  text={content}
-                  title='Risposta finale'
-                  isLoading={isLoading}
-                />
-              </div>
-            );
-          }
-        })}
-      </div> */}
-
-      {finalResponse.length > 0 && <div>
-        <ResponseBoxElementNotText
-          element={
-            (() => {
-              return <>
-                <p className='text-lg font-semibold'>Risposta finale {externalResponse?.is_complex != undefined ? (externalResponse?.is_complex ? "(Complessa)" : "(Semplice)") : ("")}</p>
-                <div className='divider mt-0' />
-                <div>
-                  <span className='whitespace-pre-line'>{finalResponse}</span>
-                  {/* <Button type="primary" onClick={() => {
-                    titoloModale.current = "BOMBO";
-                    showModal()
-                  }}>
-                    Open Modal
-                  </Button> */}
-                </div>
-              </>
-            })()
-          }
-          isLoading={isLoading} />
-      </div>}
 
       <div>
         {mostraRaw && <ResponseBoxElementNotText
