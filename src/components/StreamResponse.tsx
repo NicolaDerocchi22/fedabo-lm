@@ -94,7 +94,7 @@ const StreamResponse: React.FC<{
             }
             const stringoneMatchCastrato: string = `[${stringoneMatch[i]?.slice(11) ?? ""}`;
 
-            if (domandaIncriminata && stringoneMatchCastrato.length > 11) {
+            if (domandaIncriminata && stringoneMatchCastrato.length > 10) {
               const mostramiValue = domandaIncriminata?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
                 .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value ??
                 domandaIncriminata?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
@@ -109,6 +109,9 @@ const StreamResponse: React.FC<{
                   }}>
                   {stringoneMatch[i]}
                 </span>))());
+            }
+            else {
+              debugger;
             }
           }
         }
