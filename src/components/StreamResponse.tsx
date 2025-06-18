@@ -66,10 +66,60 @@ const StreamResponse: React.FC<{
             {arrayElementi}
           </>
         })()]);
+      } else {
+        const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
+        const myRegex = /\[Answer \d+, Context \d+\]/gi;
+        const myArray = stringone.split(myRegex);
+        const stringoneMatch = stringone.match(myRegex);
+        const arrayElementi: ReactNode[] = [];
+        debugger;
+        if (stringoneMatch && stringoneMatch?.length > 0) {
+          for (let i = 0; i < myArray.length; i++) {
+            arrayElementi.push((() => (<span>{myArray[i]}</span>))());
+            debugger;
+            let domandaIncriminata: any = {};
+            switch (stringoneMatch[i]?.slice(0, 9) ?? "") {
+              case "[Answer 1":
+                domandaIncriminata = externalResponse.first_sub_question.response;
+                break;
+              case "[Answer 2":
+                domandaIncriminata = externalResponse.second_sub_question.response;
+
+                break;
+              case "":
+                debugger;
+                break;
+              default:
+                break;
+            }
+            const stringoneMatchCastrato: string = `[${stringoneMatch[i]?.slice(11) ?? ""}`;
+
+            if (domandaIncriminata && stringoneMatchCastrato.length > 11) {
+              const mostramiValue = domandaIncriminata?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+                .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value ??
+                domandaIncriminata?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
+                  .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value;
+              arrayElementi.push((() => (
+                <span
+                  className='cursor-zoom-in underline decoration-2 decoration-sky-500'
+                  onClick={() => {
+                    titoloModale.current = stringoneMatch[i];
+                    corpoModale.current = <Markdown>{mostramiValue}</Markdown>;
+                    showModal();
+                  }}>
+                  {stringoneMatch[i]}
+                </span>))());
+            }
+          }
+        }
+        setFinalResponse([(() => {
+          return <>
+            {arrayElementi}
+          </>
+        })()]);
       }
 
     }
-
   }, [externalResponse, isLoading]);
 
   useEffect(() => {
