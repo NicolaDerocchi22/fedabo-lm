@@ -6,6 +6,7 @@ import type { IRequest } from './utils/interfaces';
 import { getResponse } from './utils/getResponse';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import { setRequestAskDataAddState } from './states/requestAskData';
 
 const InputSection: React.FC<{
   setResponse: Dispatch<SetStateAction<any>>;
@@ -187,6 +188,7 @@ const InputSection: React.FC<{
           setResponse(response.data);
           setVaiConAxios(false);
         });
+        setRequestAskDataAddState({ ...req, request_id: requestIdRef.current });
       }
     }, [vaiConAxios])
 
