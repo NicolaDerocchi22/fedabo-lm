@@ -6,6 +6,7 @@ import ResponseBox from './ResponseBox';
 import ResponseBoxElementNotText from './ResponseBoxElementNotText';
 import { Modal } from 'antd';
 import JSONFormatter from 'json-formatter-js';
+import { requestAskDataAddState, requestAskDataObject } from './states/requestAskData';
 
 const StreamResponse: React.FC<{
   showPartialResponses: boolean;
@@ -16,6 +17,8 @@ const StreamResponse: React.FC<{
 }> = ({ showPartialResponses, streamingResponsesByChunk, isLoading, externalResponse, mostraRaw }) => {
   const [finalResponse, setFinalResponse] = useState<(ReactNode | undefined)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [forceRerender, setForceRender] = useState<number>(0);
+  requestAskDataAddState("StreamResponse", setForceRender);
 
   const titoloModale = useRef<ReactNode>("Default Title");
   const corpoModale = useRef<ReactNode>("Yeah Bodddyyy");
@@ -121,6 +124,15 @@ const StreamResponse: React.FC<{
     }
   }, [externalResponse, mostraRaw]);
 
+  useEffect(() => {
+    const coasdo = document.getElementById("stoCazzoDue");
+    if (coasdo) {
+      coasdo.innerHTML = "";
+      coasdo.appendChild(new JSONFormatter(requestAskDataObject).render());
+      setForceRender(a => a + 1);
+    }
+  }, [mostraRaw, forceRerender]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -139,6 +151,21 @@ const StreamResponse: React.FC<{
         {mostraRaw && <ResponseBoxElementNotText
           element={
             (() => {
+              return <>
+                <p className='text-lg font-semibold'>Dati della richiesta</p>
+                <div className='divider mt-0' />
+                <div id='stoCazzoDue'>
+                </div>
+              </>
+            })()
+          }
+          isLoading={isLoading} />
+        }
+      </div>
+      <div>
+        {mostraRaw && <ResponseBoxElementNotText
+          element={
+            (() => {
               return externalResponse && !isLoading ? <>
                 <p className='text-lg font-semibold'>Raw fake "JSON"</p>
                 <div className='divider mt-0' />
@@ -152,7 +179,6 @@ const StreamResponse: React.FC<{
           isLoading={isLoading} />
         }
       </div>
-
       {finalResponse.length > 0 && <div>
         <ResponseBoxElementNotText
           element={

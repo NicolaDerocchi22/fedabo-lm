@@ -6,6 +6,7 @@ import type { IRequest } from './utils/interfaces';
 import { getResponse } from './utils/getResponse';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import { setRequestAskDataAddState } from './states/requestAskData';
 
 const supercazzola = {
   "question": "elenca le tematiche della ar16 nella esrs1",
@@ -302,6 +303,7 @@ const InputSection: React.FC<{
           setResponse(response.data);
           setVaiConAxios(false);
         });
+        setRequestAskDataAddState({ ...req, request_id: requestIdRef.current });
       }
     }, [vaiConAxios])
 
@@ -522,7 +524,7 @@ const InputSection: React.FC<{
             className='bg-gray-800 text-gray-300 px-6 py-2 rounded-md mt-2 cursor-pointer hover:bg-gray-700'
             onClick={() => { setMostraRaw(a => { setMostraRawLocal(!a); return !a }) }}
           >
-            {`${!mostraRawLocal ? 'Mostra' : 'Nascondi'} risposta ricevuta (raw)`}
+            {`${!mostraRawLocal ? 'Mostra' : 'Nascondi'} dati raw (response / request)`}
           </button>
         </div>
       </div>
