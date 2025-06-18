@@ -94,6 +94,24 @@ const StreamResponse: React.FC<{
 
   return (
     <>
+      <div>
+        {mostraRaw && <ResponseBoxElementNotText
+          element={
+            (() => {
+              return externalResponse && !isLoading ? <>
+                <p className='text-lg font-semibold'>Raw fake "JSON"</p>
+                <div className='divider mt-0' />
+                <div id='stoCazzo'>
+                </div>
+              </> : <>
+                <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
+              </>
+            })()
+          }
+          isLoading={isLoading} />
+        }
+      </div>
+
       {finalResponse.length > 0 && <div>
         <ResponseBoxElementNotText
           element={
@@ -129,24 +147,6 @@ const StreamResponse: React.FC<{
           )}
         </div>
       )}
-
-      <div>
-        {mostraRaw && <ResponseBoxElementNotText
-          element={
-            (() => {
-              return externalResponse && !isLoading ? <>
-                <p className='text-lg font-semibold'>Raw fake "JSON"</p>
-                <div className='divider mt-0' />
-                <div id='stoCazzo'>
-                </div>
-              </> : <>
-                <h1>ATTENDI L'ARRIVO DELL'INTERA RISPOSTA</h1>
-              </>
-            })()
-          }
-          isLoading={isLoading} />
-        }
-      </div>
 
       <Modal
         title={titoloModale.current}
