@@ -36,9 +36,13 @@ const StreamResponse: React.FC<{
   }, [streamingResponsesByChunk]);
 
   useEffect(() => {
+    setFinalResponse(getNodesWithHighliGhtedClickable());
+  }, [externalResponse, isLoading]);
+
+  const getNodesWithHighliGhtedClickable = (testo?: string, isChunko: boolean = false, qualeDomanda: string = "") => {
     if (isLoading == false && externalResponse) {
       if (!externalResponse.is_complex) {
-        const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
+        const stringone = testo ?? externalResponse.merged_response;
         const myRegex = /\[Context \d+\]/gi;
         const myArray = stringone.split(myRegex);
         const stringoneMatch = stringone.match(myRegex);
@@ -60,44 +64,34 @@ const StreamResponse: React.FC<{
                 }}>
                 {stringoneMatch[i]}
               </span>))());
-            // console.log(myArray[i]);
-            // console.log(stringone.match(myRegex)![i] ?? "");
           }
         }
-        setFinalResponse([(() => {
-          return <>
-            {arrayElementi}
-          </>
-        })()]);
+        return arrayElementi;
       } else {
-        const stringone = (finalResponse as string[]).filter(e => e && e.length > 0).join();
-        const myRegex = /\[Answer \d+, Context \d+\]/gi;
+        const stringone = testo ?? externalResponse.final_prompt.response;
+        const myRegex = isChunko ? /\[Context \d+\]/gi : /\[Answer \d+, Context \d+\]/gi;
         const myArray = stringone.split(myRegex);
         const stringoneMatch = stringone.match(myRegex);
         const arrayElementi: ReactNode[] = [];
-        debugger;
         if (stringoneMatch && stringoneMatch?.length > 0) {
           for (let i = 0; i < myArray.length; i++) {
             arrayElementi.push((() => (<span>{myArray[i]}</span>))());
-            debugger;
             let domandaIncriminata: any = {};
-            switch (stringoneMatch[i]?.slice(0, 9) ?? "") {
+            switch (isChunko ? qualeDomanda : stringoneMatch[i]?.slice(0, 9) ?? "") {
               case "[Answer 1":
                 domandaIncriminata = externalResponse.first_sub_question.response;
                 break;
               case "[Answer 2":
                 domandaIncriminata = externalResponse.second_sub_question.response;
-
                 break;
               case "":
-                debugger;
                 break;
               default:
                 break;
             }
-            const stringoneMatchCastrato: string = `[${stringoneMatch[i]?.slice(11) ?? ""}`;
+            const stringoneMatchCastrato: string = isChunko ? stringoneMatch[i] : `[${stringoneMatch[i]?.slice(11) ?? ""}`;
 
-            if (domandaIncriminata && stringoneMatchCastrato.length > 10) {
+            if (domandaIncriminata && stringoneMatchCastrato?.length > 10) {
               const mostramiValue = domandaIncriminata?.chunks_greater_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
                 .find((e: { context: string; }) => e.context == stringoneMatchCastrato)?.value ??
                 domandaIncriminata?.chunks_less_than_512.map((e: string) => ({ context: e.slice(0, e.indexOf("]") + 1), value: e }))
@@ -113,20 +107,16 @@ const StreamResponse: React.FC<{
                   {stringoneMatch[i]}
                 </span>))());
             }
-            else {
-              debugger;
-            }
           }
         }
-        setFinalResponse([(() => {
-          return <>
-            {arrayElementi}
-          </>
-        })()]);
+        else if (isChunko) {
+          return [testo];
+        }
+        return arrayElementi;
       }
-
     }
-  }, [externalResponse, isLoading]);
+    else { return [] }
+  }
 
   useEffect(() => {
     const coasdo = document.getElementById("stoCazzo");
@@ -213,13 +203,30 @@ const StreamResponse: React.FC<{
             ([chunkId, content]) => {
               if (typeof content === 'string' && !ids.includes(chunkId)) {
                 return (
-                  <div key={chunkId}>
-                    <ResponseBox
-                      text={content}
-                      title={'Risposta parziale: ' + chunkId}
-                      isLoading={isLoading}
-                    />
-                  </div>
+                  (isLoading == false && externalResponse) ? <div>
+                    <ResponseBoxElementNotText
+                      element={
+                        (() => {
+                          return <>
+                            <p className='text-lg font-semibold'>'Risposta parziale: ' {chunkId}</p>
+                            <div className='divider mt-0' />
+                            <div >
+                              <span key={chunkId} className='whitespace-pre-line'>
+                                {getNodesWithHighliGhtedClickable(content, true, parseInt(chunkId) < 1500 ? "[Answer 1" : "[Answer 2")}
+                              </span>
+                            </div>
+                          </>
+                        })()
+                      }
+                      isLoading={isLoading} />
+                  </div> :
+                    <div key={chunkId}>
+                      <ResponseBox
+                        text={content}
+                        title={'Risposta parziale: ' + chunkId}
+                        isLoading={isLoading}
+                      />
+                    </div>
                 );
               }
             }
