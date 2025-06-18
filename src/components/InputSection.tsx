@@ -409,7 +409,7 @@ const InputSection: React.FC<{
             className='bg-gray-800 text-gray-300 px-6 py-2 rounded-md mt-2 cursor-pointer hover:bg-gray-700'
             onClick={() => { setMostraRaw(a => { setMostraRawLocal(!a); return !a }) }}
           >
-            {`${!mostraRawLocal ? 'Mostra' : 'Nascondi'} risposta ricevuta (raw)`}
+            {`${!mostraRawLocal ? 'Mostra' : 'Nascondi'} dati raw (response / request)`}
           </button>
         </div>
       </div>
