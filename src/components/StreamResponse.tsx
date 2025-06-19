@@ -66,6 +66,9 @@ const StreamResponse: React.FC<{
               </span>))());
           }
         }
+        else if (isChunko) {
+          return [testo];
+        }
         return arrayElementi;
       } else {
         const stringone = testo ?? externalResponse.final_prompt.response;
